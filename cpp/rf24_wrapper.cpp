@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <iostream>
+#include <chrono>
 #include "RF24.h"
 #include "com_varel_gereon_RF24_RF24_JNI.h"
 
@@ -142,6 +143,87 @@ JNIEXPORT jboolean JNICALL Java_com_varel_gereon_RF24_RF24_1JNI_write(JNIEnv *je
 	jenv->ReleasePrimitiveArrayCritical(jbuffer, buffer, 0);
 	return (jboolean)result;
 }
+
+
+
+
+
+
+
+JNIEXPORT jboolean JNICALL Java_com_varel_gereon_RF24_RF24_1JNI_writeWithRead(JNIEnv *jenv, jclass jcls, jlong jobjPtr, jobject jobj, jbyteArray jOutgoingBuffer, jshort jOutgoingLength, jbyteArray jIncommingBuffer, jshort jIncommingLength){
+	  
+	RF24 *obj = (RF24*)0;
+	void *outBuffer = (void*)0;
+    void *inBuffer = (void*)0;
+	uint8_t outLength;
+    uint8_t inLength;
+	bool result;
+    bool timeout;
+    std::chrono::steady_clock::time_point begin;
+    std::chrono::steady_clock::time_point end;
+
+	(void)jenv;
+	(void)jcls;
+	(void)jobj;
+	
+	obj = *(RF24**)&jobjPtr;
+    
+    // Stop listening:
+    (obj)->stopListening();
+    
+    // Send outgoing message:
+	outBuffer = (void*)jenv->GetPrimitiveArrayCritical(jOutgoingBuffer, 0);
+	outLength = (uint8_t)jOutgoingLength;
+	result = (bool)(obj)->write((void const*)outBuffer, outLength);
+    jenv->ReleasePrimitiveArrayCritical(jOutgoingBuffer, outBuffer, 0);
+    
+    std::cout << "Before result return";
+    
+    // If error sending, return false (indicating problem):
+    /*if (!result){
+        
+        return false;
+    }*/
+    
+    std::cout << "After result return";
+    
+    timeout = false;
+    
+    // Store initial time:
+    begin = std::chrono::steady_clock::now();
+    
+    // Start listening:
+    (obj)->startListening();
+    
+    
+    while(true){
+        
+        
+        // Check for radio availability:
+        if ((obj)->available()){
+            break;
+        }
+        else if(std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now() - begin).count() >= 60){
+            timeout = true;
+            
+            return false;
+        }
+    }
+    
+    inBuffer = (void*)jenv->GetPrimitiveArrayCritical(jIncommingBuffer, 0);
+	inLength = (uint8_t)jIncommingLength;
+	(obj)->read(inBuffer, inLength);
+	jenv->ReleasePrimitiveArrayCritical(jIncommingBuffer, inBuffer, 0);
+    
+	return true;
+ }
+
+
+
+
+
+
+
 
 JNIEXPORT jboolean JNICALL Java_com_varel_gereon_RF24_RF24_1JNI_available(JNIEnv *jenv, jclass jcls, jlong jobjPtr, jobject jobj) {
 	RF24 *obj = (RF24*)0;

@@ -14,6 +14,9 @@ public class RF24_JNI {
     public static native void startListening(long jobjPtr, RF24 rf24);
     public static native void stopListening(long jobjPtr, RF24 rf24);
     public static native boolean write(long jobjPtr, RF24 rf24, byte[] jbuffer, short jlength);
+    
+    public static native boolean writeWithRead(long jobjPtr, RF24 rf24, byte[] outgoingMessageBuffer, short outgoingLength, byte[] incommingMessageBuffer, short incommingLength);
+    
     public static native boolean available(long jobjPtr, RF24 rf24);
     public static native void read(long jobjPtr, RF24 rf24, byte[] jbuffer, short jlength);
     public static native boolean setDataRate(long jobjPtr, RF24 rf24, short jdatarate);

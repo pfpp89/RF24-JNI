@@ -104,6 +104,15 @@ public class RF24 {
     public boolean write(byte[] buffer, short length) {
         return RF24_JNI.write(this.cPtr, this, buffer, length);
     }
+    
+    
+    
+    
+    public boolean writeWithRead(byte[] outgoingMessageBuffer, short outgoingLength, byte[] incommingMessageBuffer, short incommingLength){
+        return RF24_JNI.writeWithRead(this.cPtr, this, outgoingMessageBuffer, outgoingLength, incommingMessageBuffer, incommingLength);
+    }
+    
+    
 
     /**
      * Checks, if a payload is available.

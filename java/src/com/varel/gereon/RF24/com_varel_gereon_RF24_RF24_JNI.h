@@ -89,6 +89,14 @@ JNIEXPORT jboolean JNICALL Java_com_varel_gereon_RF24_RF24_1JNI_write
 
 /*
  * Class:     com_varel_gereon_RF24_RF24_JNI
+ * Method:    writeWithRead
+ * Signature: (JLcom/varel/gereon/RF24/RF24;[BS[BS)Z
+ */
+JNIEXPORT jboolean JNICALL Java_com_varel_gereon_RF24_RF24_1JNI_writeWithRead
+  (JNIEnv *, jclass, jlong, jobject, jbyteArray, jshort, jbyteArray, jshort);
+
+/*
+ * Class:     com_varel_gereon_RF24_RF24_JNI
  * Method:    available
  * Signature: (JLcom/varel/gereon/RF24/RF24;)Z
  */

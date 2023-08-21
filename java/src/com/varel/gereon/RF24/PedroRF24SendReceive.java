@@ -74,9 +74,20 @@ class PedroRF24SendReceive {
 		//long currentTimeMillis = date.getTime();
 		long timeoutCounterStartMillis;
 		
+		boolean state = false;
 		
 		while(true){
 			
+			// Build message:
+			messageToWrite = "1;S;R;";
+			
+			messageToWrite = messageToWrite.concat(state ? "1" : "0");
+			
+			state = !state;
+			
+			outputBuffer = messageToWrite.getBytes();
+			
+			System.out.println("Message: " + messageToWrite);
 			System.out.println("Sending message (Size: " + (short)outputBuffer.length + ")");
 			
 			rf24.write(outputBuffer, (short)outputBuffer.length);
